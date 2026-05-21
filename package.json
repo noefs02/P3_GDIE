@@ -1,0 +1,18 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "P1 GDIE",
+  "license": "ISC",
+  "author": "Noé,Rafel",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "test"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "pdf-parse": "^2.4.5",
+    "socket.io": "^4.8.3"
+  }
+}

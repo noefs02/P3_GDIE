@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC & AI Chat - Multi-usuario</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="script.js" defer></script>
+</head>
+<body>
+    <div class="app-container layout-row">
+        <!-- Sector Central -->
+        <main class="center-sector">
+            <div class="glass-panel room-controls" style="margin-bottom: 24px; text-align: center;">
+                <h2 class="side-info-title">App de Llamadas WebRTC</h2>
+                <input type="text" id="username-input" placeholder="Tu Nombre">
+                <input type="text" id="room-input" placeholder="Nombre de la sala" value="sala1">
+                <br>
+                <button id="join-btn" class="control-btn">Unirse a la sala</button>
+                <button id="hangup-btn" class="control-btn" style="display:none;">Salir</button>
+                <button id="camera-btn" class="control-btn" style="display:none;">Activar Cámara</button>
+                <button id="screen-btn" class="control-btn" style="display:none;">Compartir Pantalla</button>
+                <div id="ai-status" style="margin-top: 10px; font-size: 0.9em; color: #a0a0a0;">IA pendiente de añadir en Fase 4...</div>
+            </div>
+
+            <div id="video-grid" class="video-grid">
+                <!-- El localVideo se inyecta dinamicamente -->
+            </div>
+        </main>
+
+        <!-- Sector Derecha -->
+        <aside id="chat-sector" class="chat-section">
+            <div class="glass-panel chat-container">
+                <h2 class="side-info-title">Chat de Sala</h2>
+                <div class="chat-box" id="chat-messages">
+                    <div class="chat-message system">Rellena tus datos y únete a una sala.</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Escribe un mensaje..." disabled>
+                    <button id="send-btn" class="control-btn" disabled>Enviar</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>
