@@ -462,3 +462,87 @@ input:checked + .slider:before {
     margin-right: 4px;
     font-style: italic;
 }
+
+/* --- RESPONSIVE DESIGN (Mobile & Tablet) --- */
+@media (max-width: 900px) {
+    body {
+        height: auto;
+        min-height: 100vh;
+        padding: 0;
+        margin: 0;
+    }
+
+    .app-container {
+        padding: 0;
+    }
+
+    .layout-row {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        padding: 10px;
+        gap: 12px;
+        overflow-y: auto;
+    }
+
+    .center-sector {
+        flex: none;
+        width: 100%;
+        overflow-y: visible;
+    }
+
+    .chat-section {
+        flex: none;
+        width: 100%;
+        min-width: unset;
+        max-width: none;
+        height: 70vh; /* Suficiente altura para chatear cómodamente */
+    }
+
+    .video-grid {
+        min-height: 250px;
+        padding: 5px;
+        gap: 10px;
+    }
+
+    .video-box {
+        width: 100% !important;
+        max-height: 40vh !important;
+        min-height: 250px;
+    }
+    
+    .video-box.unpinned {
+        width: calc(50% - 5px) !important;
+        min-height: 150px;
+    }
+
+    .room-controls {
+        padding: 15px;
+    }
+
+    .room-controls input {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 12px;
+        box-sizing: border-box;
+    }
+    
+    .room-controls button {
+        width: calc(33% - 10px);
+        margin: 5px;
+        font-size: 0.85rem;
+        padding: 12px 8px;
+    }
+    
+    #join-btn, #hangup-btn {
+        width: 100%;
+        margin: 8px 0;
+        padding: 14px;
+        font-size: 1rem;
+    }
+    
+    .translation-controls {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+}
