@@ -49,7 +49,7 @@ const io = new Server(server, {
 // Servidor de Señalización WebRTC (Malla Multi-usuario)
 io.on('connection', (socket) => {
   console.log('Usuario conectado:', socket.id);
-  
+
   socket.on('join', (data) => {
     socket.join(data.room);
     console.log(`Usuario ${socket.id} (${data.name}) se unió a la sala: ${data.room}`);
@@ -78,10 +78,20 @@ io.on('connection', (socket) => {
       sender: socket.id
     });
   });
-  
+
+  socket.on('leave-room', (data) => {
+    if (data && data.room) {
+      // 1. Notificar primero a los demás en la sala
+      socket.to(data.room).emit('user-left-room', socket.id);
+      // 2. Salir físicamente de la sala
+      socket.leave(data.room);
+      console.log(`Usuario ${socket.id} abandonó la sala: ${data.room}`);
+    }
+  });
+
   socket.on('disconnect', () => {
     console.log('Usuario desconectado:', socket.id);
-    io.emit('user-left', socket.id);
+    io.emit('user-disconnected', socket.id);
   });
 });
 

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -6,6 +6,7 @@
     <title>WebRTC & AI Chat - Multi-usuario</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="/socket.io/socket.io.js"></script>
     <script type="module" src="script.js" defer></script>
 </head>
@@ -18,10 +19,11 @@
                 <input type="text" id="username-input" placeholder="Tu Nombre">
                 <input type="text" id="room-input" placeholder="Nombre de la sala" value="sala1">
                 <br>
-                <button id="join-btn" class="control-btn">Unirse a la sala</button>
-                <button id="hangup-btn" class="control-btn" style="display:none;">Salir</button>
-                <button id="camera-btn" class="control-btn" style="display:none;">Activar Cámara</button>
-                <button id="screen-btn" class="control-btn" style="display:none;">Compartir Pantalla</button>
+                <button id="join-btn" class="control-btn"><i class="fa-solid fa-right-to-bracket"></i> Unirse a la sala</button>
+                <button id="hangup-btn" class="control-btn" style="display:none;"><i class="fa-solid fa-phone-slash"></i> Salir</button>
+                <button id="camera-btn" class="control-btn" style="display:none;"><i class="fa-solid fa-video-slash"></i> Activar Cámara</button>
+                <button id="mic-btn" class="control-btn" style="display:none;"><i class="fa-solid fa-microphone-slash"></i> Activar Micrófono</button>
+                <button id="screen-btn" class="control-btn" style="display:none;"><i class="fa-solid fa-desktop"></i> Compartir Pantalla</button>
                 <div id="ai-status" style="margin-top: 10px; font-size: 0.9em; color: #a0a0a0;">IA pendiente de añadir en Fase 4...</div>
             </div>
 
@@ -39,7 +41,7 @@
                 </div>
                 <div class="chat-input-area">
                     <input type="text" id="chat-input" placeholder="Escribe un mensaje..." disabled>
-                    <button id="send-btn" class="control-btn" disabled>Enviar</button>
+                    <button id="send-btn" class="control-btn" disabled><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
         </aside>
