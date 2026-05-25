@@ -357,3 +357,108 @@ body {
     border-radius: 6px;
     cursor: pointer;
 }
+
+/* --- Moderation Controls --- */
+.moderation-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.moderation-label {
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+.moderation-status {
+    font-size: 0.8em;
+    margin-left: auto;
+    color: #a0a0a0;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #444;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: var(--primary-color);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--primary-color);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 20px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* --- Translation & Smart Replies --- */
+.glass-select {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    color: var(--text-color);
+    padding: 6px 12px;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    font-size: 0.85em;
+}
+
+.glass-select option {
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+
+.translated-mark {
+    font-size: 0.75em;
+    color: #fbbf24; /* yellow/amber */
+    margin-right: 4px;
+    font-style: italic;
+}

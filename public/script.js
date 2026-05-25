@@ -1,3 +1,6 @@
+import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.1';
+env.allowLocalModels = false;
+
 const socket = io();
 
 // DOM Elements
@@ -13,6 +16,71 @@ const screenBtn = document.getElementById('screen-btn');
 const chatMessages = document.getElementById('chat-messages');
 const chatInput = document.getElementById('chat-input');
 const sendBtn = document.getElementById('send-btn');
+const moderationToggle = document.getElementById('moderation-toggle');
+const moderationStatus = document.getElementById('moderation-status');
+const translationSelect = document.getElementById('translation-select');
+const translationStatus = document.getElementById('translation-status');
+
+// AI State
+let toxicityClassifier = null;
+let isModerationLoading = false;
+let translator = null;
+let currentTargetLang = 'none';
+
+if (translationSelect) {
+    translationSelect.addEventListener('change', async (e) => {
+        const lang = e.target.value;
+        currentTargetLang = lang;
+        if (lang !== 'none') {
+            try {
+                translationStatus.textContent = "Cargando...";
+                translationSelect.disabled = true;
+                const modelName = lang === 'es' ? 'Xenova/opus-mt-en-es' : 'Xenova/opus-mt-es-en';
+                translator = await pipeline('translation', modelName);
+                translationStatus.textContent = "Listo";
+                translationStatus.style.color = "#10b981";
+                translationSelect.disabled = false;
+            } catch(err) {
+                console.error(err);
+                translationStatus.textContent = "Error";
+                translationStatus.style.color = "#ef4444";
+                translationSelect.value = 'none';
+                currentTargetLang = 'none';
+                translationSelect.disabled = false;
+            }
+        } else {
+            translationStatus.textContent = "";
+            translator = null;
+        }
+    });
+}
+
+if (moderationToggle) {
+    moderationToggle.disabled = false;
+    moderationToggle.addEventListener('change', async (e) => {
+        if (e.target.checked && !toxicityClassifier && !isModerationLoading) {
+            try {
+                isModerationLoading = true;
+                moderationStatus.textContent = "Cargando IA...";
+                moderationToggle.disabled = true;
+                
+                toxicityClassifier = await pipeline('text-classification', 'Xenova/toxic-bert');
+                
+                moderationStatus.textContent = "IA Lista";
+                moderationStatus.style.color = "#10b981"; 
+                moderationToggle.disabled = false;
+                isModerationLoading = false;
+            } catch(err) {
+                console.error("Error loading toxic-bert:", err);
+                moderationStatus.textContent = "Error IA";
+                moderationStatus.style.color = "#ef4444";
+                e.target.checked = false;
+                moderationToggle.disabled = false;
+                isModerationLoading = false;
+            }
+        }
+    });
+}
 
 // --- MANEJO DE SESIÓN Y PERSISTENCIA (sessionStorage) ---
 // 1. Identificador de usuario único de sesión
@@ -198,7 +266,7 @@ function playNotificationSound(type) {
 }
 
 // 1. Interfaz del Chat Helpers
-function appendMessage(senderClass, text, senderName, colorColor) {
+function appendMessage(senderClass, text, senderName, colorColor, isTranslated = false, lang = '') {
     const msgDiv = document.createElement('div');
     msgDiv.className = 'chat-message ' + senderClass;
     
@@ -208,6 +276,13 @@ function appendMessage(senderClass, text, senderName, colorColor) {
         nameSpan.textContent = senderName;
         if (colorColor) nameSpan.style.color = colorColor;
         msgDiv.appendChild(nameSpan);
+    }
+    
+    if (isTranslated) {
+        const mark = document.createElement('span');
+        mark.className = 'translated-mark';
+        mark.textContent = `[A->${lang.toUpperCase()}] `;
+        msgDiv.appendChild(mark);
     }
     
     const textNode = document.createTextNode(text);
@@ -581,20 +656,58 @@ function createPeerConnection(targetId, targetName, targetColor) {
     return pc;
 }
 
+
+
 function setupDataChannel(targetId, channel) {
     dataChannels[targetId] = channel;
     channel.onopen = () => {
         chatInput.disabled = false;
         sendBtn.disabled = false;
     };
-    channel.onmessage = (event) => {
-        appendMessage('remote', event.data, peerNames[targetId], peerColors[targetId]);
+    channel.onmessage = async (event) => {
+        let originalText = event.data;
+        let textToDisplay = originalText;
+        let isTranslated = false;
+        
+        if (translator && currentTargetLang !== 'none') {
+            try {
+                const res = await translator(originalText);
+                textToDisplay = res[0].translation_text;
+                isTranslated = true;
+            } catch(e) { console.error(e); }
+        }
+
+        if (moderationToggle && moderationToggle.checked && toxicityClassifier) {
+            try {
+                const results = await toxicityClassifier(originalText);
+                const isToxic = results.some(r => r.label === 'toxic' && r.score > 0.85);
+                if (isToxic) {
+                    textToDisplay = textToDisplay.replace(/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/g, '*');
+                }
+            } catch (err) {
+                console.error("Error in moderation:", err);
+            }
+        }
+        
+        appendMessage('remote', textToDisplay, peerNames[targetId], peerColors[targetId], isTranslated, currentTargetLang);
     };
 }
 
-sendBtn.addEventListener('click', () => {
-    const text = chatInput.value.trim();
+sendBtn.addEventListener('click', async () => {
+    let text = chatInput.value.trim();
     if (text) {
+        if (moderationToggle && moderationToggle.checked && toxicityClassifier) {
+            try {
+                const results = await toxicityClassifier(text);
+                const isToxic = results.some(r => r.label === 'toxic' && r.score > 0.85);
+                if (isToxic) {
+                    text = text.replace(/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/g, '*');
+                }
+            } catch (err) {
+                console.error("Error in moderation:", err);
+            }
+        }
+
         appendMessage('me', text, myName, myColor);
         for (let targetId in dataChannels) {
             const channel = dataChannels[targetId];

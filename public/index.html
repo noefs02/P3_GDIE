@@ -24,7 +24,6 @@
                 <button id="camera-btn" class="control-btn" style="display:none;"><i class="fa-solid fa-video-slash"></i> Activar Cámara</button>
                 <button id="mic-btn" class="control-btn" style="display:none;"><i class="fa-solid fa-microphone-slash"></i> Activar Micrófono</button>
                 <button id="screen-btn" class="control-btn" style="display:none;"><i class="fa-solid fa-desktop"></i> Compartir Pantalla</button>
-                <div id="ai-status" style="margin-top: 10px; font-size: 0.9em; color: #a0a0a0;">IA pendiente de añadir en Fase 4...</div>
             </div>
 
             <div id="video-grid" class="video-grid">
@@ -36,6 +35,23 @@
         <aside id="chat-sector" class="chat-section">
             <div class="glass-panel chat-container">
                 <h2 class="side-info-title">Chat de Sala</h2>
+                <div class="moderation-controls">
+                    <label class="switch" title="Activar filtro de toxicidad con IA">
+                        <input type="checkbox" id="moderation-toggle" disabled>
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="moderation-label">Moderación IA</span>
+                    <span id="moderation-status" class="moderation-status"></span>
+                </div>
+                <div class="translation-controls" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                    <span class="moderation-label">Traducir entrantes a:</span>
+                    <select id="translation-select" class="glass-select">
+                        <option value="none">Desactivado</option>
+                        <option value="es">Español</option>
+                        <option value="en">Inglés</option>
+                    </select>
+                    <span id="translation-status" class="moderation-status"></span>
+                </div>
                 <div class="chat-box" id="chat-messages">
                     <div class="chat-message system">Rellena tus datos y únete a una sala.</div>
                 </div>
